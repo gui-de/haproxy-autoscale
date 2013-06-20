@@ -22,7 +22,8 @@ global
     balance roundrobin
     timeout connect 5s
     timeout server 86400
-    % for instance in instances['security-group']:
+    #server dev-api-01 10.0.0.19:80 maxconn 512 check
+    % for instance in instances['sg-27ec1148']:
     server ${ instance.id } ${ instance.private_dns_name }:80 maxconn 512 check
     % endfor
 

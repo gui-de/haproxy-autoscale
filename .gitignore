@@ -4,6 +4,7 @@ bin
 include
 lib*
 build
+build.sh
 templates/testing.tpl
 local
 haproxy.cfg
