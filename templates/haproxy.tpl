@@ -1,33 +1,35 @@
-global  
+global
+    user haproxy
+    group haproxy
     daemon
-    maxconn 256
+    stats socket /tmp/haproxy.sock
 
-defaults
-    mode http
-    timeout connect 5000ms
-    timeout client 5000ms
-    timeout server 5000ms
+    log 127.0.0.1 local0
+    log 127.0.0.1 local1 notice
 
-frontend www *:80
-    mode http
-    maxconn 50000
-    default_backend servers
+    defaults
+        mode http
+        timeout connect 5000ms
+        timeout client 50000ms
+        timeout server 50000ms
 
-backend servers
+    frontend http-in
+        bind *:80
+        default_backend api-servers
+
+    backend api-servers
     mode http
     balance roundrobin
+    timeout connect 5s
+    timeout server 86400
     % for instance in instances['security-group-1']:
-    server ${ instance.id } ${ instance.private_dns_name }
+    server ${ instance.id } ${ instance.private_dns_name }:80 maxconn 512 check
     % endfor
 
-frontend java *:8080,*:8443
+listen stats :1984
     mode http
-    maxconn 50000
-    default_backend java_servers
-
-backend java_servers
-    mode http
-    balance roundrobin
-    % for instance in instances['security-group-2']:
-    server ${ instance.id } ${ instance.private_dns_name }
-    % endfor
+    stats enable
+    stats realm stats
+        # Get PID if haproxy is already running.
+    stats uri /
+    stats auth admin:p00k3rR00m
