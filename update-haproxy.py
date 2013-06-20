@@ -35,22 +35,8 @@ def main():
     
     for security_group in args.security_group:
         logging.info('Getting instances for %s.' % security_group)
-<<<<<<< HEAD
         instances[security_group] = get_all_security_groups(access_key=args.access_key, secret_key=args.secret_key, security_group=security_group)
         
-=======
-        #instances[security_group] = get_running_instances(access_key=args.access_key,
-        #                                                  secret_key=args.secret_key,
-        #                                                  security_group=security_group)
-        instances[security_group] = get_all_security_groups(access_key=args.access_key, secret_key=args.secret_key, security_group=security_group)
-
-    from pprint import pprint
-    print(len(instances))
-    pprint(instances)
-    #instances[security_group] = get_all_security_groups(access_key=args.access_key, secret_key=args.secret_key, security_group=security_group)
-    #pprint(test)
-    #print(instances[security_group])
->>>>>>> 423fde7ff96138e62b867052f291eee1f2db54b7
     # Generate the new config from the template.
     logging.info('Generating configuration for haproxy.')
     new_configuration = generate_haproxy_config(template=args.template,
