@@ -8,3 +8,4 @@ build.sh
 templates/testing.tpl
 local
 haproxy.cfg
+build.sh

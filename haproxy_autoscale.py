@@ -3,6 +3,7 @@ from boto.ec2.securitygroup import SecurityGroup
 import urllib2
 import logging
 from mako.template import Template
+from pprint import pprint
 
 def get_self_instance_id():
     '''
@@ -26,6 +27,7 @@ def get_all_security_groups(access_key=None, secret_key=None, security_group=Non
                         if security_group in group.name or security_group in group.id:
                             if instance.state == 'running':
                                 instances.append(instance)
+
     return instances
 
 
