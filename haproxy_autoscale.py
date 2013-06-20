@@ -3,6 +3,7 @@ from boto.ec2.securitygroup import SecurityGroup
 import urllib2
 import logging
 from mako.template import Template
+from pprint import pprint
 
 def get_self_instance_id():
     '''
@@ -12,6 +13,20 @@ def get_self_instance_id():
     response = urllib2.urlopen('http://169.254.169.254/1.0/meta-data/instance-id')
     instance_id = response.read()
     return instance_id
+
+
+def get_all_security_groups(access_key=None, secret_key=None, security_group=None):
+    conn = EC2Connection(aws_access_key_id=access_key,
+                         aws_secret_access_key=secret_key)
+    instances = []
+    for reservation in conn.get_all_instances():
+        if len(reservation.instances) > 0:
+            for instance in reservation.instances:
+                if len(instance.groups) > 0:
+                    for group in instance.groups:
+                        if security_group in group.name or security_group in group.id:
+                            instances.append(instance)
+    return instances
 
 
 def steal_elastic_ip(access_key=None, secret_key=None, ip=None):

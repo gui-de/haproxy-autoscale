@@ -7,7 +7,7 @@ import argparse
 import os
 import subprocess
 import logging
-from haproxy_autoscale import get_running_instances, file_contents, generate_haproxy_config, steal_elastic_ip
+from haproxy_autoscale import get_running_instances, file_contents, generate_haproxy_config, steal_elastic_ip, get_all_security_groups
 import urllib2
 
 
@@ -32,11 +32,20 @@ def main():
 
     # Fetch a list of all the instances in these security groups.
     instances = {}
+    
     for security_group in args.security_group:
         logging.info('Getting instances for %s.' % security_group)
-        instances[security_group] = get_running_instances(access_key=args.access_key,
-                                                          secret_key=args.secret_key,
-                                                          security_group=security_group)
+        #instances[security_group] = get_running_instances(access_key=args.access_key,
+        #                                                  secret_key=args.secret_key,
+        #                                                  security_group=security_group)
+        instances[security_group] = get_all_security_groups(access_key=args.access_key, secret_key=args.secret_key, security_group=security_group)
+
+    from pprint import pprint
+    print(len(instances))
+    pprint(instances)
+    #instances[security_group] = get_all_security_groups(access_key=args.access_key, secret_key=args.secret_key, security_group=security_group)
+    #pprint(test)
+    #print(instances[security_group])
     # Generate the new config from the template.
     logging.info('Generating configuration for haproxy.')
     new_configuration = generate_haproxy_config(template=args.template,
